@@ -11,24 +11,27 @@ class BestBooks extends React.Component {
       books: [],
       show: false,
       bookData: {},
+      showUpdate: false
     };
   }
   handleShow = () => {
     this.setState({
       show: true,
+      
     });
   };
 
   handleUpdateShow=(data)=>{
     this.setState({
-      show: true,
-      bookData: data,
-    });
+      showUpdate:true,
+      bookData: data
+    })
   }
 
   handleClose = () => {
     this.setState({
       show: false,
+      showUpdate: false
     });
   };
 
@@ -56,7 +59,7 @@ class BestBooks extends React.Component {
     axios
       .post(`${process.env.REACT_APP_URL}addBooks`, obj)
       .then((result) => {
-        console.log(result)
+        console.log(result);
         this.setState({
           books: result.data,
         });
@@ -81,6 +84,7 @@ class BestBooks extends React.Component {
   };
 
   updateBookHandler = (e) => {
+    e.preventDefault()
     let obj = {
       title: e.target.title.value,
       description: e.target.description.value,
@@ -100,7 +104,9 @@ class BestBooks extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    this.handleClose();
+    this.setState({
+      showUpdate:false
+    })
   };
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
@@ -113,18 +119,12 @@ class BestBooks extends React.Component {
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
         <div>
           <AddBookForm
-            handleShow={this.state.show}
+            handleShow={this.handleShow}
+            openAddModal={this.state.show}
             handleClose={this.handleClose}
             addBookHandler={this.addBookHandler}
-            showModal={this.handleShow}
           />
-          <UpdateBookForm
-            handleShows={this.state.show}
-            handleCloses={this.handleClose}
-            updateBookHandler={this.updateBookHandler}
-            handleUpdateShow={this.handleUpdateShow}
-            bookData={this.state.bookData}
-          />
+          <UpdateBookForm showUpdate={this.state.showUpdate} updateBookHandler={this.updateBookHandler} handleClose={this.handleClose} bookData={this.state.bookData}/>
           <RenderBooks
             books={this.state.books}
             deleteBookHandler={this.deleteBookHandler}

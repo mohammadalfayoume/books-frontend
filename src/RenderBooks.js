@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
 
-
 class RenderBooks extends Component {
   render() {
     return (
@@ -25,6 +24,7 @@ class RenderBooks extends Component {
                   <Button style={{backgroundColor:'green',marginRight:'10px'}} variant="secondary" onClick={()=> this.props.handleUpdateShow(item)}>
                   Edit
                 </Button>
+                
                   <Button style={{backgroundColor:'red'}} variant="secondary" onClick={()=> this.props.deleteBookHandler(item._id)}>
                   Delete
                 </Button>

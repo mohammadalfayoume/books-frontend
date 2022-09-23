@@ -9,12 +9,12 @@ class AddBookForm extends Component {
       <div>
         <Button
           variant="primary"
-          onClick={this.props.showModal}
+          onClick={this.props.handleShow}
           style={{ display: "block", width: "100px", margin: "20px auto" }}
         >
           Add Book
         </Button>
-        <Modal show={this.props.handleShow} onHide={this.props.handleClose}>
+        <Modal show={this.props.openAddModal} onHide={this.props.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Add Book</Modal.Title>
           </Modal.Header>

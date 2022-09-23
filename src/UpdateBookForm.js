@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -7,7 +7,8 @@ class UpdateBookForm extends Component {
   render() {
     return (
       <div>
-        <Modal show={this.props.handleShows} onHide={this.props.handleCloses}>
+       
+        <Modal show={this.props.showUpdate} onHide={this.props.handleClose} >
           <Modal.Header closeButton>
             <Modal.Title>Edit Book</Modal.Title>
           </Modal.Header>
@@ -71,16 +72,14 @@ class UpdateBookForm extends Component {
                 <Button variant="primary" type="submit">
                   Submit
                 </Button>
-                <Button variant="secondary" onClick={this.props.handleClose}>
-                  Close
-                </Button>
+              
               </Modal.Footer>
             </Form>
           </Modal.Body>
         </Modal>
       </div>
-    )
+    );
   }
 }
 
-export default UpdateBookForm
+export default UpdateBookForm;
