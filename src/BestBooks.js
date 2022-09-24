@@ -3,6 +3,8 @@ import axios from "axios";
 import RenderBooks from "./RenderBooks";
 import AddBookForm from "./AddBookForm";
 import UpdateBookForm from "./UpdateBookForm";
+import { withAuth0 } from "@auth0/auth0-react";
+
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -11,33 +13,34 @@ class BestBooks extends React.Component {
       books: [],
       show: false,
       bookData: {},
-      showUpdate: false
+      showUpdate: false,
+      user:this.props.auth0.user
     };
   }
   handleShow = () => {
     this.setState({
       show: true,
-      
     });
   };
 
-  handleUpdateShow=(data)=>{
+  handleUpdateShow = (data) => {
     this.setState({
-      showUpdate:true,
-      bookData: data
-    })
-  }
+      showUpdate: true,
+      bookData: data,
+    });
+  };
 
   handleClose = () => {
     this.setState({
       show: false,
-      showUpdate: false
+      showUpdate: false,
     });
   };
-
+  
   componentDidMount = () => {
+    // const { user } = this.props.auth0;
     axios
-      .get(`${process.env.REACT_APP_URL}getBooks`)
+      .get(`${process.env.REACT_APP_URL}getUserBooks/${this.state.user.email}`)
       .then((result) => {
         this.setState({
           books: result.data,
@@ -49,12 +52,14 @@ class BestBooks extends React.Component {
   };
 
   addBookHandler = (e) => {
+    // const { user } = this.props.auth0;
     e.preventDefault();
     let obj = {
       title: e.target.title.value,
       description: e.target.description.value,
       status: e.target.status.value,
       image: e.target.image.value,
+      email: this.state.user.email,
     };
     axios
       .post(`${process.env.REACT_APP_URL}addBooks`, obj)
@@ -62,6 +67,7 @@ class BestBooks extends React.Component {
         console.log(result);
         this.setState({
           books: result.data,
+          email: this.state.user.email,
         });
       })
       .catch((err) => {
@@ -71,8 +77,9 @@ class BestBooks extends React.Component {
   };
 
   deleteBookHandler = (id) => {
+    // const { user } = this.props.auth0;
     axios
-      .delete(`${process.env.REACT_APP_URL}deleteBooks/${id}`)
+      .delete(`${process.env.REACT_APP_URL}deleteBooks/${id}/${this.state.user.email}`)
       .then((result) => {
         this.setState({
           books: result.data,
@@ -84,16 +91,18 @@ class BestBooks extends React.Component {
   };
 
   updateBookHandler = (e) => {
-    e.preventDefault()
+    // const { user } = this.props.auth0;
+    e.preventDefault();
     let obj = {
       title: e.target.title.value,
       description: e.target.description.value,
       status: e.target.status.value,
       image: e.target.image.value,
+      email: this.state.user.email
     };
     axios
       .put(
-        `${process.env.REACT_APP_URL}updateBooks/${this.state.bookData._id}`,
+        `${process.env.REACT_APP_URL}updateBooks/${this.state.bookData._id}/${this.state.user.email}`,
         obj
       )
       .then((result) => {
@@ -105,15 +114,14 @@ class BestBooks extends React.Component {
         console.log(err);
       });
     this.setState({
-      showUpdate:false
-    })
+      showUpdate: false,
+    });
   };
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
 
   render() {
     /* TODO: render all the books in a Carousel */
-
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
@@ -124,7 +132,13 @@ class BestBooks extends React.Component {
             handleClose={this.handleClose}
             addBookHandler={this.addBookHandler}
           />
-          <UpdateBookForm showUpdate={this.state.showUpdate} updateBookHandler={this.updateBookHandler} handleClose={this.handleClose} bookData={this.state.bookData}/>
+          <UpdateBookForm
+            showUpdate={this.state.showUpdate}
+            updateBookHandler={this.updateBookHandler}
+            handleClose={this.handleClose}
+            bookData={this.state.bookData}
+          />
+
           <RenderBooks
             books={this.state.books}
             deleteBookHandler={this.deleteBookHandler}
@@ -136,4 +150,4 @@ class BestBooks extends React.Component {
   }
 }
 
-export default BestBooks;
+export default withAuth0(BestBooks);
